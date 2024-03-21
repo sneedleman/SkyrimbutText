@@ -1,3 +1,5 @@
+from Classes.Classes import *
+
 # print("welcome message")
 # print lore
 # character creation:
