@@ -25,6 +25,8 @@ class Character:
     def items(self):
         return self._items
 
+    def __str__(self):
+        return f"Name: {self._name}, Class: {self._player_class.type}"
 
 
 class PlayerClass:
@@ -81,11 +83,13 @@ class WeaponType:
 
 
 class Stats:
-    def __init__(self, ID, max_health, health, defense, max_mana, mana):
+    def __init__(self, ID, max_health, health, defense, dodge, attack, max_mana, mana):
         self._ID = ID
         self._max_health = max_health
         self._health = health
         self._defense = defense
+        self._dodge = dodge
+        self._attack = attack
         self._max_mana = max_mana
         self._mana = mana
 
@@ -113,18 +117,58 @@ class Stats:
     def mana(self):
         return self._mana
 
-def choose_character(characters):
-    print("Available Classes:")
-    for index, character in enumerate(characters):
-        print(f"{index + 1}. ({character.player_class.type})")
 
-    while True:
-        choice = input("Choose a character by entering its number: ")
-        try:
-            choice = int(choice)
-            if 1 <= choice <= len(characters):
-                return characters[choice - 1]
-            else:
-                print("Invalid choice. Please enter a valid number.")
-        except ValueError:
-            print("Invalid input. Please enter a number.")
+class GameMap:
+    def __init__(self, ID, width, height):
+        self._ID = ID
+        self._width = width
+        self._height = height
+        self._map_data = [[None] * width for _ in range(height)]
+
+    @property
+    def ID(self):
+        return self._ID
+
+    @property
+    def width(self):
+        return self._width
+
+    @property
+    def height(self):
+        return self._height
+
+    @property
+    def map_data(self):
+        return self._map_data
+
+    #   Methods:
+    #       - __init__(width, height): constructor method to initialize the map with given dimensions
+    #       - print_map(): method to print the map to the console
+    #       - set_tile(x, y, tile): method to set the value of a specific tile on the map
+    #       - get_tile(x, y): method to get the value of a specific tile on the map
+
+    #   Method to print the map:
+    def print_map(self):
+        for row in self.map_data:
+            print(row)
+
+    #   Method to set a tile value:
+    def set_tile(self, x, y, tile):
+        if 0 <= x < self.width and 0 <= y < self.height:
+            self.map_data[y][x] = tile
+        else:
+            print("Error: Out of bounds.")
+
+    #   Method to get a tile value:
+    # Function get_tile(x, y):
+    def get_tile(self, x, y):
+        # If 0 <= x < self.width and 0 <= y < self.height:
+        if 0 <= x < self.width and 0 <= y < self.height:
+            # Return the value of self.map_data[y][x]
+            return self.map_data[y][x]
+        # Else:
+        else:
+            # Print an error message indicating out of bounds
+            print("Error: Out of bounds")
+            # Return None
+            return None
