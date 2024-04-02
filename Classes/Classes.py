@@ -124,6 +124,7 @@ class GameMap:
         self._width = width
         self._height = height
         self._map_data = [[None] * width for _ in range(height)]
+        self._encounters = {}
 
     @property
     def ID(self):
@@ -141,13 +142,6 @@ class GameMap:
     def map_data(self):
         return self._map_data
 
-    #   Methods:
-    #       - __init__(width, height): constructor method to initialize the map with given dimensions
-    #       - print_map(): method to print the map to the console
-    #       - set_tile(x, y, tile): method to set the value of a specific tile on the map
-    #       - get_tile(x, y): method to get the value of a specific tile on the map
-
-    #   Method to print the map:
     def print_map(self):
         for row in self.map_data:
             print(row)
@@ -157,18 +151,39 @@ class GameMap:
         if 0 <= x < self.width and 0 <= y < self.height:
             self.map_data[y][x] = tile
         else:
-            print("Error: Out of bounds.")
+            print("Out of bounds.")
 
-    #   Method to get a tile value:
-    # Function get_tile(x, y):
     def get_tile(self, x, y):
-        # If 0 <= x < self.width and 0 <= y < self.height:
         if 0 <= x < self.width and 0 <= y < self.height:
-            # Return the value of self.map_data[y][x]
             return self.map_data[y][x]
-        # Else:
         else:
-            # Print an error message indicating out of bounds
-            print("Error: Out of bounds")
-            # Return None
+            print("Out of bounds.")
             return None
+
+    def set_encounter(self, x, y, encounter):
+        if 0 <= x < self._width and 0 <= y < self._height:
+            self._encounters[(x, y)] = encounter
+        else:
+            print("Out of bounds.")
+
+    def get_encounter(self, x, y):
+        return self._encounters.get((x, y), None)
+
+
+class Encounter:
+    def __init__(self, ID, enemy_type, dialog):
+        self._ID = ID
+        self._enemy_type = enemy_type
+        self._dialog = dialog
+
+    @property
+    def ID(self):
+        return self._ID
+
+    @property
+    def enemy_type(self):
+        return self._enemy_type
+
+    @property
+    def dialog(self):
+        return self._dialog

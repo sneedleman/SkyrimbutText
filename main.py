@@ -2,7 +2,6 @@ from Classes.Classes import *
 
 
 def main():
-
     def choose_character(char):
         print("Available Classes:")
         for index, character in enumerate(char):
@@ -22,6 +21,9 @@ def main():
     map_width = 3
     map_height = 3
     game_map = GameMap(1, map_width, map_height)
+    current_location = (0, 0)
+    game_map.set_encounter(2, 2, Encounter(1, "Orc", "dialog!"))
+    game_map.set_encounter(4, 4, Encounter(1, "Goblin", "dialog!"))
 
     # stats:
     warrior_stats = {
@@ -74,6 +76,23 @@ def main():
     print(f"This you? \n{chosen_character}")
     for stat, value in chosen_character.player_class.stats.items():
         print(f"{stat.capitalize()}: {value}")
+    while True:
+        print(f"You are at location {current_location}")
+        direction = input("Enter direction (up, down, right, left): ")
+        if direction == "up":
+            current_location = (current_location[0], current_location[1] - 1)
+        elif direction == "down":
+            current_location = (current_location[0], current_location[1] + 1)
+        elif direction == "right":
+            current_location = (current_location[0] + 1, current_location[1])
+        elif direction == "left":
+            current_location = (current_location[0] - 1, current_location[1])
+        else:
+            print("Invalid direction.")
+
+        encounter = game_map.get_encounter(*current_location)
+        if encounter:
+            print(f"Encounter: You encountered a {encounter.enemy_type}!")
 
 
 if __name__ == "__main__":
