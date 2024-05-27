@@ -1,47 +1,26 @@
 from Classes.Classes import *
+import numpy as np
 
 
 def main():
-    """The main function of the game."""
-    # Character creation function
-    def choose_character(character):
-        """Choose a character from a list of available characters.
-
-        Args:
-            character (list): List of available characters.
-
-        Returns:
-            Character: The chosen character.
-        """
-        print("Available Classes:")
-        for index, character in enumerate(character):
-            print(f"{index + 1}. ({character.player_class.type})")
-
-        while True:
-            choice = input("Choose a character by entering its number: ")
-            try:
-                choice = int(choice)
-                if 1 <= choice <= len(character):
-                    return character[choice - 1]
-                else:
-                    print("Invalid choice. Please enter a valid number.")
-            except ValueError:
-                print("Invalid input. Please enter a number.")
-
     # Map settings
     map_height = 5
     map_width = 5
     game_map = GameMap(1, map_width, map_height)
+    map_data = np.array(
+        [[Tile(counter) for counter in range(y * map_width + 1, (y + 1) * map_width + 1)] for y in range(map_height)])
+    for row in map_data:
+        print(" ".join(str(tile) for tile in row))
     game_map.shuffle_tiles()
 
     # Set encounters
-    game_map.set_encounter(2, 2, Encounter(1, "Enemy", "Orc!", ""))
+    game_map.set_encounter(2, 2, Encounter(1, "Enemy", "Orc!", "no dialog"))
     game_map.set_encounter(4, 4, Encounter(2, "Enemy", "Goblin!", ""))
 
     # Define stats for different classes
-    warrior_stats = {'max_health': 8, 'health': 8, 'defense': 4, 'dodge': 1, 'attack': 3, 'max_mana': 1, 'mana': 1}
-    mage_stats = {'max_health': 4, 'health': 4, 'defense': 1, 'dodge': 3, 'attack': 2, 'max_mana': 7, 'mana': 7}
-    rogue_stats = {'max_health': 4, 'health': 4, 'defense': 1, 'dodge': 7, 'attack': 4, 'max_mana': 1, 'mana': 1}
+    warrior_stats = {'max_health': 80, 'health': 80, 'defense': 14, 'dodge': 4, 'attack': 30, 'max_mana': 10, 'mana': 10}
+    mage_stats = {'max_health': 40, 'health': 40, 'defense': 8, 'dodge': 3, 'attack': 2, 'max_mana': 70, 'mana': 70}
+    rogue_stats = {'max_health': 40, 'health': 40, 'defense': 10, 'dodge': 8, 'attack': 40, 'max_mana': 10, 'mana': 10}
 
     print("lore, backstory, etc...")
     print("Who are you?")
@@ -54,6 +33,32 @@ def main():
     warrior = Character(1, "", warrior_class)
     mage = Character(2, "", mage_class)
     rogue = Character(2, "", rogue_class)
+
+    """The main function of the game."""
+    # Character creation function
+    def choose_character(characters):
+        """Choose a character from a list of available characters.
+
+        Args:
+            characters (list): List of available characters.
+
+        Returns:
+            Character: The chosen character.
+        """
+        print("Available Classes:")
+        for index, character in enumerate(characters):
+            print(f"{index + 1}. ({character.player_class.type})")
+
+        while True:
+            choice = input("Choose a character by entering its number: ")
+            try:
+                choice = int(choice)
+                if 1 <= choice <= len(characters):
+                    return characters[choice - 1]
+                else:
+                    print("Invalid choice. Please enter a valid number.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
 
     characters = [warrior, mage, rogue]
     chosen_character = choose_character(characters)

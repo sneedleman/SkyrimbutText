@@ -1,3 +1,6 @@
+import random
+
+
 class Character:
     def __init__(self, ID, name, player_class):
         self._ID = ID
@@ -126,6 +129,27 @@ class GameMap:
         self._map_data = [[None] * width for _ in range(height)]
         self._encounters = {}
 
+        # Initialize map with unique IDs
+        self._initialize_map()
+
+    def _initialize_map(self):
+        counter = 1
+        for y in range(self._height):
+            for x in range(self._width):
+                self._map_data[y][x] = Tile(counter)
+                counter += 1
+
+    def shuffle_tiles(self):
+        flattened_map = [tile for row in self._map_data for tile in row]
+        random.shuffle(flattened_map)
+
+        # Reassign shuffled tiles to map
+        counter = 0
+        for y in range(self._height):
+            for x in range(self._width):
+                self._map_data[y][x] = flattened_map[counter]
+                counter += 1
+
     @property
     def ID(self):
         return self._ID
@@ -146,7 +170,6 @@ class GameMap:
         for row in self.map_data:
             print(row)
 
-    #   Method to set a tile value:
     def set_tile(self, x, y, tile):
         if 0 <= x < self.width and 0 <= y < self.height:
             self.map_data[y][x] = tile
@@ -170,10 +193,23 @@ class GameMap:
         return self._encounters.get((x, y), None)
 
 
-class Encounter:
-    def __init__(self, ID, enemy_type, dialog):
+class Tile:
+    def __init__(self, ID):
         self._ID = ID
-        self._enemy_type = enemy_type
+
+    @property
+    def ID(self):
+        return self._ID
+
+    def __str__(self):
+        return str(self._ID)
+
+
+class Encounter:
+    def __init__(self, ID, encounter_type, enemy, dialog):
+        self._ID = ID
+        self._encounter_type = encounter_type
+        self._enemy = enemy
         self._dialog = dialog
 
     @property
@@ -181,8 +217,12 @@ class Encounter:
         return self._ID
 
     @property
-    def enemy_type(self):
-        return self._enemy_type
+    def encounter_type(self):
+        return self._encounter_type
+
+    @property
+    def enemy(self):
+        return self._enemy
 
     @property
     def dialog(self):
