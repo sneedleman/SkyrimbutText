@@ -1,0 +1,49 @@
+{
+  "classes": [
+    {
+      "ID": 1,
+      "type": "Warrior",
+      "stats": {
+        "max_health": 80,
+        "health": 80,
+        "defense": 14,
+        "dodge": 4,
+        "attack": 30,
+        "max_mana": 10,
+        "mana": 10
+      },
+      "attributes": {},
+      "weapon_type": "Sword"
+    },
+    {
+      "ID": 2,
+      "type": "Mage",
+      "stats": {
+        "max_health": 40,
+        "health": 40,
+        "defense": 8,
+        "dodge": 3,
+        "attack": 2,
+        "max_mana": 70,
+        "mana": 70
+      },
+      "attributes": {},
+      "weapon_type": "Staff"
+    },
+    {
+      "ID": 3,
+      "type": "Rogue",
+      "stats": {
+        "max_health": 40,
+        "health": 40,
+        "defense": 10,
+        "dodge": 8,
+        "attack": 40,
+        "max_mana": 10,
+        "mana": 10
+      },
+      "attributes": {},
+      "weapon_type": "Dagger"
+    }
+  ]
+}

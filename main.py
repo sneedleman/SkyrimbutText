@@ -1,31 +1,46 @@
 from Classes.Classes import *
 import numpy as np
 import random
+import json
 
+def load_json(filename):
+    try:
+        with open(filename, 'r') as file:
+            return json.load(file)
+    except Exception as e:
+        print(f"Error loading JSON: {e}")
+        return None
+
+def create_player_class(data):
+    return PlayerClass(data['ID'], data['type'], data['stats'], data['attributes'], data['weapon_type'])
 
 def main():
     try:
         map_height = 5
         map_width = 5
         game_map = GameMap(1, map_width, map_height)
+        game_map.shuffle_tiles()
 
-        encounter_positions = random.sample([(x, y) for x in range(map_width) for y in range(map_height)], 2)
-        encounter1_position = encounter_positions[0]
-        encounter2_position = encounter_positions[1]
+        encounters = load_json('./Data/encounters.json')['encounters']
+        encounter_positions = random.sample([(x, y) for x in range(map_width) for y in range(map_height)], len(encounters))
 
-        game_map.set_encounter(encounter1_position[0], encounter1_position[1], Encounter(1, "Enemy", "Orc!", "no dialog"))
-        game_map.set_encounter(encounter2_position[0], encounter2_position[1], Encounter(2, "Enemy", "Goblin!", ""))
+        for position, encounter_data in zip(encounter_positions, encounters):
+            encounter = Encounter(
+                encounter_data['ID'],
+                encounter_data['encounter_type'],
+                encounter_data['description'],
+                encounter_data['dialog'],
+                encounter_data.get('reward')
+            )
+            game_map.set_encounter(position[0], position[1], encounter)
 
-        warrior_stats = {'max_health': 80, 'health': 80, 'defense': 14, 'dodge': 4, 'attack': 30, 'max_mana': 10, 'mana': 10}
-        mage_stats = {'max_health': 40, 'health': 40, 'defense': 8, 'dodge': 3, 'attack': 2, 'max_mana': 70, 'mana': 70}
-        rogue_stats = {'max_health': 40, 'health': 40, 'defense': 10, 'dodge': 8, 'attack': 40, 'max_mana': 10, 'mana': 10}
+        classes = load_json('./Data/stats.json')['classes']
+        warrior_class = create_player_class(classes[0])
+        mage_class = create_player_class(classes[1])
+        rogue_class = create_player_class(classes[2])
 
         print("lore, backstory, etc...")
         print("Who are you?")
-
-        warrior_class = PlayerClass(1, "Warrior", warrior_stats, {}, "Sword")
-        mage_class = PlayerClass(2, "Mage", mage_stats, {}, "Staff")
-        rogue_class = PlayerClass(3, "Rogue", rogue_stats, {}, "Dagger")
 
         warrior = Character(1, "", warrior_class)
         mage = Character(2, "", mage_class)
@@ -68,36 +83,30 @@ def main():
                 new_location = current_location
 
                 if direction in ["up", "down", "right", "left"]:
-                    try:
-                        if direction == "up" and current_location[1] < map_height - 1:
-                            new_location = (current_location[0], current_location[1] + 1)
-                        elif direction == "down" and current_location[1] > 0:
-                            new_location = (current_location[0], current_location[1] - 1)
-                        elif direction == "right" and current_location[0] < map_width - 1:
-                            new_location = (current_location[0] + 1, current_location[1])
-                        elif direction == "left" and current_location[0] > 0:
-                            new_location = (current_location[0] - 1, current_location[1])
-                        else:
-                            print("Out of bounds.")
-                    except IndexError:
-                        print("Movement out of bounds.")
+                    if direction == "up" and current_location[1] < map_height - 1:
+                        new_location = (current_location[0], current_location[1] + 1)
+                    elif direction == "down" and current_location[1] > 0:
+                        new_location = (current_location[0], current_location[1] - 1)
+                    elif direction == "right" and current_location[0] < map_width - 1:
+                        new_location = (current_location[0] + 1, current_location[1])
+                    elif direction == "left" and current_location[0] > 0:
+                        new_location = (current_location[0] - 1, current_location[1])
+                    else:
+                        print("Out of bounds.")
                 else:
                     print("Enter a valid direction.")
 
                 if new_location != current_location:
                     current_location = new_location
 
-                try:
-                    encounter = game_map.get_encounter(*current_location)
-                    if encounter:
-                        print(f"Encounter: You encountered a {encounter.enemy}")
-                except Exception as e:
-                    print(f"Error checking for encounter: {e}")
-        else:
-            print("No character chosen. Exiting game.")
-    except Exception as e:
-        print(f"An error occurred in the game: {e}")
+                encounter = game_map.get_encounter(*current_location)
+                if encounter:
+                    print(f"{encounter.dialog}")
+                    if encounter.reward:
+                        print(f"You received: {encounter.reward}")
 
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()

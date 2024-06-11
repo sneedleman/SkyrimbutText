@@ -1,0 +1,36 @@
+{
+  "encounters": [
+    {
+      "ID": 1,
+      "encounter_type": "Enemy",
+      "description": "Orc",
+      "dialog": "An Orc appears, his huge axe in your face!"
+    },
+    {
+      "ID": 2,
+      "encounter_type": "Treasure",
+      "description": "A pile of gold",
+      "dialog": "You found a hidden treasure chest filled with gold coins!",
+      "reward": "50 gold"
+    },
+    {
+      "ID": 3,
+      "encounter_type": "NPC",
+      "description": "A wandering merchant",
+      "dialog": "Greetings traveler! Care to trade?"
+    },
+    {
+      "ID": 4,
+      "encounter_type": "Trap",
+      "description": "A deadly trap",
+      "dialog": "You triggered a trap! Arrows shoot from the walls!"
+    },
+    {
+      "ID": 5,
+      "encounter_type": "Enemy",
+      "description": "Goblin",
+      "dialog": "A sneaky goblin jumps out from the shadows!"
+    }
+  ]
+}
+

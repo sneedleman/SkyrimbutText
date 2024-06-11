@@ -204,11 +204,12 @@ class Tile:
 
 
 class Encounter:
-    def __init__(self, ID, encounter_type, enemy, dialog):
+    def __init__(self, ID, encounter_type, description, dialog, reward=None):
         self._ID = ID
         self._encounter_type = encounter_type
-        self._enemy = enemy
+        self._description = description
         self._dialog = dialog
+        self._reward = reward
 
     @property
     def ID(self):
@@ -219,9 +220,16 @@ class Encounter:
         return self._encounter_type
 
     @property
-    def enemy(self):
-        return self._enemy
+    def description(self):
+        return self._description
 
     @property
     def dialog(self):
         return self._dialog
+
+    @property
+    def reward(self):
+        return self._reward
+
+    def __str__(self):
+        return f"Encounter: {self._description}, Dialog: {self._dialog}, Reward: {self._reward}"
