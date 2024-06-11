@@ -129,7 +129,6 @@ class GameMap:
         self._map_data = [[None] * width for _ in range(height)]
         self._encounters = {}
 
-        # Initialize map with unique IDs
         self._initialize_map()
 
     def _initialize_map(self):
@@ -143,7 +142,6 @@ class GameMap:
         flattened_map = [tile for row in self._map_data for tile in row]
         random.shuffle(flattened_map)
 
-        # Reassign shuffled tiles to map
         counter = 0
         for y in range(self._height):
             for x in range(self._width):
