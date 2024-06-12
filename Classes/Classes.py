@@ -31,7 +31,17 @@ class Character:
     def __str__(self):
         return f"Name: {self._name}, Class: {self._player_class.type}"
 
+    def add_item(self, item):
+        self._items.append(item)
+        print(f"Added {item['name']} to inventory.")
 
+    def show_inventory(self):
+        if not self._items:
+            print("broke ahh")
+        else:
+            print("Inventory: \n")
+            for item in self._items:
+                print(f"- {item['name']}: {item['description']}")
 class PlayerClass:
     def __init__(self, ID, type, stats, attributes, weapon_type):
         self._ID = ID
@@ -119,6 +129,25 @@ class Stats:
     @property
     def mana(self):
         return self._mana
+
+
+class Inventory:
+    def __init__(self, ID, Name, Type, Defense, Effect, Description):
+        self._ID = ID
+        self._Name = Name
+        self._Type = Type
+        self._Defense = Defense
+        self._Effect = Effect
+        self._Description = Description
+
+    def add_item(self):
+        pass
+
+    def remove_item(self):
+        pass
+
+    def display_items(self):
+        pass
 
 
 class GameMap:

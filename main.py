@@ -1,28 +1,53 @@
-from Classes.Classes import *
-import numpy as np
-import random
 import json
+from Classes.Classes import *
+
 
 def load_json(filename):
-    try:
-        with open(filename, 'r') as file:
-            return json.load(file)
-    except Exception as e:
-        print(f"Error loading JSON: {e}")
-        return None
+    with open(filename, 'r') as file:
+        return json.load(file)
 
-def create_player_class(data):
-    return PlayerClass(data['ID'], data['type'], data['stats'], data['attributes'], data['weapon_type'])
+
+def create_player_class(class_data):
+    return PlayerClass(
+        class_data['ID'],
+        class_data['type'],
+        class_data['stats'],
+        class_data['attributes'],
+        class_data['weapon_type']
+    )
+
+
+def create_item(item_data):
+    return {
+        'ID': item_data['ID'],
+        'name': item_data['name'],
+        'description': item_data['description']
+    }
+
+
+def get_map_size():
+    while True:
+        map_size = input("Choose map size: small, medium, big: ").lower()
+        if map_size == "small":
+            return 5, 5
+        elif map_size == "medium":
+            return 10, 10
+        elif map_size == "big":
+            return 15, 15
+        else:
+            print("Invalid input. Please enter 'small', 'medium', or 'big'.")
+
 
 def main():
     try:
-        map_height = 5
-        map_width = 5
+        # Get map size from user
+        map_width, map_height = get_map_size()
         game_map = GameMap(1, map_width, map_height)
         game_map.shuffle_tiles()
 
-        encounters = load_json('./Data/encounters.json')['encounters']
-        encounter_positions = random.sample([(x, y) for x in range(map_width) for y in range(map_height)], len(encounters))
+        encounters = load_json('encounters.json')['encounters']
+        encounter_positions = random.sample([(x, y) for x in range(map_width) for y in range(map_height)],
+                                            len(encounters))
 
         for position, encounter_data in zip(encounter_positions, encounters):
             encounter = Encounter(
@@ -34,7 +59,7 @@ def main():
             )
             game_map.set_encounter(position[0], position[1], encounter)
 
-        classes = load_json('./Data/stats.json')['classes']
+        classes = load_json('classes.json')['classes']
         warrior_class = create_player_class(classes[0])
         mage_class = create_player_class(classes[1])
         rogue_class = create_player_class(classes[2])
@@ -103,10 +128,12 @@ def main():
                 if encounter:
                     print(f"{encounter.dialog}")
                     if encounter.reward:
-                        print(f"You received: {encounter.reward}")
+                        chosen_character.add_item(encounter.reward)
+                        print(f"You received: {encounter.reward['name']}")
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     main()

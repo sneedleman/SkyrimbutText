@@ -1,0 +1,60 @@
+{
+  "items": [
+    {
+      "ID": 1,
+      "type": "Weapon",
+      "name": "Sword",
+      "damage": 15,
+      "description": "A sharp blade perfect for close combat."
+    },
+    {
+      "ID": 2,
+      "type": "Weapon",
+      "name": "Bow",
+      "damage": 10,
+      "description": "A ranged weapon for attacking from a distance."
+    },
+    {
+      "ID": 3,
+      "type": "Weapon",
+      "name": "Staff",
+      "damage": 5,
+      "description": "A magical staff that enhances spell power."
+    },
+    {
+      "ID": 4,
+      "type": "Armor",
+      "name": "Shield",
+      "defense": 10,
+      "description": "A sturdy shield that offers excellent protection."
+    },
+    {
+      "ID": 5,
+      "type": "Armor",
+      "name": "Helmet",
+      "defense": 5,
+      "description": "A helmet that protects the wearer's head."
+    },
+    {
+      "ID": 6,
+      "type": "Potion",
+      "name": "Health Potion",
+      "effect": "Restore 20 health",
+      "description": "A potion that restores health when consumed."
+    },
+    {
+      "ID": 7,
+      "type": "Potion",
+      "name": "Mana Potion",
+      "effect": "Restore 20 mana",
+      "description": "A potion that restores mana when consumed."
+    },
+    {
+      "ID": 8,
+      "type": "Currency",
+      "name": "Gold Coin",
+      "value": 1,
+      "description": "Shiny!"
+    }
+  ]
+}
