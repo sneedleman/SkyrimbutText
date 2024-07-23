@@ -15,12 +15,15 @@
       "reward": {"ID": 2, "name": "Mana Potion", "description": "Restores 30 mana points."}
     },
     {
-      "ID": 3,
-      "encounter_type": "Treasure",
-      "description": "A pile of gold",
-      "dialog": "You found a hidden treasure chest filled with gold coins!",
-      "reward": "50"
-    },
+            "ID": 3,
+            "encounter_type": "treasure",
+            "description": "You found a hidden treasure chest filled with gold coins!",
+            "dialog": "Congratulations, you've found a treasure chest!",
+            "reward": {
+                "name": "Gold Coins",
+                "amount": 50
+            }
+        },
     {
       "ID": 4,
       "encounter_type": "NPC",
