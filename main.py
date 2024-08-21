@@ -1,10 +1,16 @@
 import json
-import random
+from pynput import keyboard
+from pynput.keyboard import Key
 from Classes.Classes import *
+
+# Global variable for current location
+current_location = (0, 0)
+
 
 def load_json(filename):
     with open(filename, 'r') as file:
         return json.load(file)
+
 
 def create_player_class(class_data):
     return PlayerClass(
@@ -15,12 +21,14 @@ def create_player_class(class_data):
         class_data['weapon_type']
     )
 
+
 def create_item(item_data):
     return {
         'ID': item_data['ID'],
         'name': item_data['name'],
         'description': item_data['description']
     }
+
 
 def get_map_size():
     while True:
@@ -34,7 +42,46 @@ def get_map_size():
         else:
             print("Invalid input. Please enter 'small', 'medium', or 'big'.")
 
+
+def on_press(key):
+    global current_location
+    new_location = current_location
+
+    try:
+        if key == Key.up and current_location[1] < map_height - 1:
+            new_location = (current_location[0], current_location[1] + 1)
+        elif key == Key.down and current_location[1] > 0:
+            new_location = (current_location[0], current_location[1] - 1)
+        elif key == Key.right and current_location[0] < map_width - 1:
+            new_location = (current_location[0] + 1, current_location[1])
+        elif key == Key.left and current_location[0] > 0:
+            new_location = (current_location[0] - 1, current_location[1])
+
+        if new_location != current_location:
+            current_location = new_location
+            print(f"New location: {current_location}")
+
+            try:
+                encounter = game_map.get_encounter(*current_location)
+                if encounter:
+                    print(f"{encounter.dialog}")
+                    if encounter.reward:
+                        print(f"Reward data: {encounter.reward}")
+                        if isinstance(encounter.reward, dict):
+                            chosen_character.add_item(encounter.reward)
+                            print(f"You received: {encounter.reward['name']}")
+                        else:
+                            print(f"You received a reward: {encounter.reward}")
+            except Exception as e:
+                print(f"An error occurred while processing the encounter: {e}")
+
+    except AttributeError:
+        pass
+
+
 def main():
+    global map_width, map_height, game_map, chosen_character
+
     try:
         # Get map size from user
         map_width, map_height = get_map_size()
@@ -42,8 +89,8 @@ def main():
         game_map.shuffle_tiles()
 
         encounters = load_json('Data/encounters.json')['encounters']
-        encounter_positions = random.sample([(x, y) for x in range(map_width) for y in range(map_height)],
-                                            len(encounters))
+        potential_positions = [(x, y) for x in range(map_width) for y in range(map_height) if (x, y) != (0, 0)]
+        encounter_positions = random.sample(potential_positions, len(encounters))
 
         for position, encounter_data in zip(encounter_positions, encounters):
             encounter = Encounter(
@@ -91,38 +138,13 @@ def main():
         for stat, value in chosen_character.player_class.stats.items():
             print(f"{stat.capitalize()}: {value}")
 
-        current_location = (0, 0)
+        print("\nInstructions:")
+        print("Use the arrow keys to move around the map.")
+        print("Press 'Esc' to exit the game.")
 
-        while True:
-            print(f"You are at location {current_location}")
-            direction = input("Enter direction (up, down, right, left): ").lower()
-            new_location = current_location
-
-            if direction in ["up", "down", "right", "left"]:
-                if direction == "up" and current_location[1] < map_height - 1:
-                    new_location = (current_location[0], current_location[1] + 1)
-                elif direction == "down" and current_location[1] > 0:
-                    new_location = (current_location[0], current_location[1] - 1)
-                elif direction == "right" and current_location[0] < map_width - 1:
-                    new_location = (current_location[0] + 1, current_location[1])
-                elif direction == "left" and current_location[0] > 0:
-                    new_location = (current_location[0] - 1, current_location[1])
-                else:
-                    print("Out of bounds.")
-            else:
-                print("Enter a valid direction.")
-
-            if new_location != current_location:
-                current_location = new_location
-
-            try:
-                encounter = game_map.get_encounter(*current_location)
-                if encounter:
-                    print(f"{encounter.dialog}")
-                    if encounter.reward:
-                        chosen_character.add_item(encounter.reward)
-            except Exception as e:
-                print(f"An error occurred while processing the encounter: {e}")
+        # listen for keyboard input
+        with keyboard.Listener(on_press=on_press) as listener:
+            listener.join()
 
     except Exception as e:
         print(f"An error occurred: {e}")

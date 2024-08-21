@@ -35,13 +35,23 @@ class Character:
         self._items.append(item)
         print(f"Added {item['name']} to inventory.")
 
-    def show_inventory(self):
+    def remove_item(self, to_be):
+        for item in self._items:
+            if item['name'] == to_be:
+                self._items.remove(item)
+                print(f"Item '{to_be}' removed from inventory.")
+                return
+        print(f"Item '{to_be}' not found in inventory.")
+
+    def view_inventory(self):
         if not self._items:
             print("broke ahh")
         else:
             print("Inventory: \n")
             for item in self._items:
-                print(f"- {item['name']}: {item['description']}")
+                print(f"- {item['name']}")
+
+
 class PlayerClass:
     def __init__(self, ID, type, stats, attributes, weapon_type):
         self._ID = ID
@@ -168,14 +178,25 @@ class GameMap:
                 counter += 1
 
     def shuffle_tiles(self):
-        flattened_map = [tile for row in self._map_data for tile in row]
+
+        start_tile = self._map_data[self._height - 1][0]
+        end_tile = self._map_data[0][self._width - 1]
+
+        flattened_map = [tile for row in self._map_data for tile in row if tile not in [start_tile, end_tile]]
+
         random.shuffle(flattened_map)
 
+        # Reassign the shuffled tiles back to the map
         counter = 0
         for y in range(self._height):
             for x in range(self._width):
-                self._map_data[y][x] = flattened_map[counter]
-                counter += 1
+                if (x, y) == (0, 0):
+                    self._map_data[y][x] = start_tile  # Set start tile back to its original position
+                elif (x, y) == (self._width - 1, self._height - 1):
+                    self._map_data[y][x] = end_tile  # Set end tile back to its original position
+                else:
+                    self._map_data[y][x] = flattened_map[counter]  # Set the shuffled tile
+                    counter += 1
 
     @property
     def ID(self):
