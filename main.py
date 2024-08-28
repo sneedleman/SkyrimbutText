@@ -1,9 +1,10 @@
 import json
+
 from pynput import keyboard
 from pynput.keyboard import Key
+
 from Classes.Classes import *
 
-# Global variable for current location
 current_location = (0, 0)
 
 
@@ -56,6 +57,8 @@ def on_press(key):
             new_location = (current_location[0] + 1, current_location[1])
         elif key == Key.left and current_location[0] > 0:
             new_location = (current_location[0] - 1, current_location[1])
+        elif key.char == 'i':
+            chosen_character.view_inventory()
 
         if new_location != current_location:
             current_location = new_location
@@ -66,16 +69,14 @@ def on_press(key):
                 if encounter:
                     print(f"{encounter.dialog}")
                     if encounter.reward:
-                        print(f"Reward data: {encounter.reward}")
                         if isinstance(encounter.reward, dict):
                             chosen_character.add_item(encounter.reward)
-                            print(f"You received: {encounter.reward['name']}")
-                        else:
-                            print(f"You received a reward: {encounter.reward}")
             except Exception as e:
                 print(f"An error occurred while processing the encounter: {e}")
 
     except AttributeError:
+        if key == keyboard.Key.esc:
+            return False
         pass
 
 
@@ -114,17 +115,17 @@ def main():
         mage = Character(2, "", mage_class)
         rogue = Character(3, "", rogue_class)
 
-        def choose_character(characters):
+        def choose_character(player_char):
             print("Available Classes:")
-            for index, character in enumerate(characters):
+            for index, character in enumerate(player_char):
                 print(f"{index + 1}. ({character.player_class.type})")
 
             while True:
                 choice = input("Choose a character by entering its number: ")
                 try:
                     choice = int(choice)
-                    if 1 <= choice <= len(characters):
-                        return characters[choice - 1]
+                    if 1 <= choice <= len(player_char):
+                        return player_char[choice - 1]
                     else:
                         print("Invalid choice. Please enter a valid number.")
                 except ValueError:
@@ -139,15 +140,19 @@ def main():
             print(f"{stat.capitalize()}: {value}")
 
         print("\nInstructions:")
-        print("Use the arrow keys to move around the map.")
-        print("Press 'Esc' to exit the game.")
+        print(f"Use the arrow keys to move around the map. \n"
+              f"i for inventory. \n"
+              f"esc to leave. (data not saved yet)")
 
         # listen for keyboard input
-        with keyboard.Listener(on_press=on_press) as listener:
+        with keyboard.Listener(
+                on_press=on_press,
+                suppress=True) as listener:
             listener.join()
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     main()
